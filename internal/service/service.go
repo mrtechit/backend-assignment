@@ -1,14 +1,24 @@
 package service
 
 import (
+	"encoding/json"
+	"github.com/mrtechit/backend-assignment/internal/service/handler"
 	"math/big"
 	"net/http"
 )
 
 type Parser interface {
-	GetCurrentBlock() int
+	GetCurrentBlock() (int, error)
 	Subscribe(address string) bool
 	GetTransactions(address string) []Transaction
+}
+
+type ErrorResponse struct {
+	ErrorMessage string `json:"error"`
+}
+
+type Response struct {
+	BlockNumber int `json:"block_number"`
 }
 
 type Transaction struct {
@@ -25,7 +35,22 @@ type Transaction struct {
 }
 
 func GetCurrentBlock(w http.ResponseWriter, r *http.Request) {
+	rs := handler.New()
+	blockNumber, err := rs.GetCurrentBlock()
+	if err != nil {
+		http.Error(w, "Error occured", http.StatusInternalServerError)
+		return
+	}
 
+	w.Header().Set("Content-Type", "application/json")
+	response := Response{BlockNumber: blockNumber}
+	jsonResponse, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonResponse)
 }
 
 func Subscribe(w http.ResponseWriter, r *http.Request) {
