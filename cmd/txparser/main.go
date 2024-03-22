@@ -11,9 +11,9 @@ const portNum string = ":8181"
 
 func main() {
 
-	http.HandleFunc("/block", service.GetCurrentBlock)
-	http.HandleFunc("/subscribe", service.Subscribe)
-	http.HandleFunc("/transactions", service.GetTransactions)
+	http.HandleFunc("v1/api/block", service.GetCurrentBlock)
+	http.HandleFunc("v1/api/subscribe", service.Subscribe)
+	http.HandleFunc("v1/api/transactions", service.GetTransactions)
 
 	// Spinning up the server.
 	err := http.ListenAndServe(portNum, nil)
