@@ -1,8 +1,18 @@
-package http
+package handler
 
-import "github.com/mrtechit/backend-assignment/internal/service"
+import (
+	"github.com/mrtechit/backend-assignment/internal/db"
+	"github.com/mrtechit/backend-assignment/internal/db/inmem"
+	"github.com/mrtechit/backend-assignment/internal/service"
+)
 
 type RestService struct {
+	db db.Db
+}
+
+func New() *RestService {
+	db := inmem.New()
+	return &RestService{db: db}
 }
 
 func (r RestService) GetCurrentBlock() int {

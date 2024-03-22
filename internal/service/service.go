@@ -1,6 +1,9 @@
 package service
 
-import "math/big"
+import (
+	"math/big"
+	"net/http"
+)
 
 type Parser interface {
 	GetCurrentBlock() int
@@ -19,4 +22,16 @@ type Transaction struct {
 	Gas         *big.Int `json:"gas"`
 	GasPrice    *big.Int `json:"gasPrice"`
 	Input       string   `json:"input"`
+}
+
+func GetCurrentBlock(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func Subscribe(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func GetTransactions(w http.ResponseWriter, r *http.Request) {
+
 }
