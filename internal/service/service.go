@@ -21,6 +21,10 @@ type Response struct {
 	BlockNumber int `json:"block_number"`
 }
 
+type TransactionsResponse struct {
+	Transactions []Transaction `json:"transactions"`
+}
+
 type Transaction struct {
 	ChainID     *big.Int `json:"chainId"`
 	BlockNumber *big.Int `json:"blockNumber"`
@@ -68,5 +72,19 @@ func Subscribe(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTransactions(w http.ResponseWriter, r *http.Request) {
+	service := handler.New()
+	address := r.URL.Query().Get("address")
+	transactions := service.GetTransactions(address)
+
+	w.Header().Set("Content-Type", "application/json")
+	response := TransactionsResponse{Transactions: transactions}
+	jsonResponse, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonResponse)
 
 }
