@@ -35,8 +35,8 @@ type Transaction struct {
 }
 
 func GetCurrentBlock(w http.ResponseWriter, r *http.Request) {
-	rs := handler.New()
-	blockNumber, err := rs.GetCurrentBlock()
+	service := handler.New()
+	blockNumber, err := service.GetCurrentBlock()
 	if err != nil {
 		http.Error(w, "Error occured", http.StatusInternalServerError)
 		return
@@ -49,11 +49,21 @@ func GetCurrentBlock(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonResponse)
 }
 
 func Subscribe(w http.ResponseWriter, r *http.Request) {
+	service := handler.New()
+	address := r.URL.Path[len("v1/api/address/"):]
+	if ok := service.Subscribe(address); !ok {
+		http.Error(w, "Error occured", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 
 }
 
